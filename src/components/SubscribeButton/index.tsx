@@ -1,5 +1,5 @@
 import { api } from '../../services/api' 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/client';
 import styles from './styles.module.scss'
 import { getStripeJs } from '../../services/stripe-js';
 
@@ -11,7 +11,7 @@ interface SubscribeButtonProps{
 
 export function SubscribeButton({priceId}:SubscribeButtonProps){
    
-    const {data: session } = useSession()
+    const [session] = useSession()
 
     async function hendleSubcribeButton(){
         if(!session){

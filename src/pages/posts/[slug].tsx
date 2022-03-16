@@ -1,13 +1,14 @@
 import { GetServerSideProps } from "next"
-import { getSession } from "next-auth/react"
+import { getSession } from "next-auth/client"
 import { RichText } from "prismic-dom"
 import { getPrismicClient } from "../../services/prismic"
-import Head from "next/head"
+import styles  from "./post.module.scss";
+import Head from "next/head";
 
 
 interface  PostProps{
     post: {
-        slug: string,
+        slug: any,
         title: string,
         content: string,
         updatedAt:string,
@@ -15,17 +16,22 @@ interface  PostProps{
 }
 
 export default function Post({ post }:PostProps){
+    console.log(post.slug)
    return(
     <>   
+        
         <Head>
             <title>{post.title} | Ignews</title>
         </Head>
 
-        <main>
-            <article>
+        <main className={styles.container}>
+            <article className={styles.post}>
                 <h1>{post.title}</h1>
                 <time>{post.updatedAt}</time>
-                <div dangerouslySetInnerHTML={{__html: post.content}} />
+                <div 
+                    className={styles.postContent}
+                    dangerouslySetInnerHTML={{__html: post.content}} 
+                />
                 
             </article>
         </main>
@@ -35,11 +41,14 @@ export default function Post({ post }:PostProps){
 
 export const getServerSideProps: GetServerSideProps = async ({req,params})=> {
     const session = await getSession({req})
-    const {slug} = params ;
+    
+    const {slug} = params;    
+
+    console.log(session);
     /*if(!session){
         
     }*/
-    const prismic = getPrismicClient({req})
+    const prismic = getPrismicClient(req)
     const response = await prismic.getByUID<any>('publication',String(slug), {})
 
     const post = {
@@ -55,5 +64,6 @@ export const getServerSideProps: GetServerSideProps = async ({req,params})=> {
 
     return{
         props:{post}
+        
     }
 }
