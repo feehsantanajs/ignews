@@ -13,10 +13,11 @@ export default NextAuth({
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
         scope: 'read:user',   
     }), // ...add more providers here
-  ],  
+  ], 
   
   callbacks: {
     async session(session){
+      console.log('ola entro')
       try{
         const userActiveSubscription = await fauna.query(
           q.Get(
